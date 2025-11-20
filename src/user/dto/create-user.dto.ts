@@ -5,11 +5,8 @@ import {
   IsNotEmpty,
   IsString,
   IsOptional,
-  IsDateString,
   Matches,
-  IsEnum,
 } from 'class-validator';
-
 
 export class CreateUserDto {
   @ApiProperty({
@@ -34,7 +31,6 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Mật khẩu không được để trống!' })
   readonly password: string;
 
-
   @ApiProperty({ required: false, description: 'Đường dẫn avatar' })
   @IsOptional()
   readonly avatar?: string | null;
@@ -49,5 +45,4 @@ export class CreateUserDto {
     message: 'Số điện thoại phải có 10 chữ số và bắt đầu bằng 0.',
   })
   readonly phone?: string;
-
 }

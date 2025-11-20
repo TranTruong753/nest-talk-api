@@ -1,0 +1,30 @@
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtPayload } from '../dto/auth.dto';
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor(private configService: ConfigService) {
+    super({
+      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        // Ưu tiên lấy từ cookie
+        (req) => req?.cookies?.['access_token'],
+        // fallback: lấy từ header
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
+      ignoreExpiration: false,
+      secretOrKey: configService.get<string>('JWT_SECRET') || '',
+    });
+  }
+
+  async validate(payload: JwtPayload) {
+    return {
+      userId: payload.id,
+      username: payload.username,
+      email: payload.email,
+    };
+  }
+}
